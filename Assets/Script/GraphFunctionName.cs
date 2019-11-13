@@ -10,5 +10,7 @@
     TwistingCylinder,
     Ellipse,
     Sphere,
-    PulsingSphere
+    PulsingSphere,
+    Torus,
+    InterestingTorus
 }

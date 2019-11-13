@@ -154,10 +154,9 @@ MonoBehaviour:
   resolution: 20
   hRange: 1
   function: 0
-  xFactor: 1
-  yFactor: 1
-  PIFactor: 1
-  speed: 1
+  uFactor: 1
+  vFactor: 1
+  animationSpeed: 1
 --- !u!4 &618689202
 Transform:
   m_ObjectHideFlags: 0
