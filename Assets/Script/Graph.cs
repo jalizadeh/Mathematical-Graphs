@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class Graph : MonoBehaviour
 {
-
+    #region VARIABLES
     //public enum Functions { Sine, Multiple_Sine};
+    const float PI = Mathf.PI;
 
     Transform[] points;
     public Transform pointPrefab;
@@ -20,7 +21,11 @@ public class Graph : MonoBehaviour
 
     //public Functions functions;
     public GraphFunctionName function;
-    static GraphFunctions[] functions = { SineFunction, MultiSineFunction };
+    static GraphFunctions[] functions = 
+            { SineFunction,
+            Sine2DFunction,
+            MultiSineFunction,
+            MultiSine2DFunction };
 
     float step;
     Vector3 scale;
@@ -30,21 +35,20 @@ public class Graph : MonoBehaviour
     public float yFactor = 1f;
     public float PIFactor = 1f;
     public float speed = 1f;
+    #endregion
 
-    private void Awake()
-    {
 
-    }
+
 
     // Start is called before the first frame update
     void Start()
     {
 
         /*
-             * Transform.localPosition;
-             * Position of the transform relative to the parent transform.
-             * If the transform has no parent, it is the same as Transform.position.
-            */
+         * Transform.localPosition;
+         * Position of the transform relative to the parent transform.
+         * If the transform has no parent, it is the same as Transform.position.
+        */
 
         step = (hRange * 1f) / resolution;
         scale = Vector3.one * step;
@@ -54,7 +58,7 @@ public class Graph : MonoBehaviour
         realRes = resolution * 2;
         points = new Transform[realRes * realRes];
 
-        for (int i = 0, z=0; z < realRes; z++)
+        for (int i = 0, z = 0; z < realRes; z++)
         {
             position.z = (z + 0.5f) * step - hRange;
 
@@ -76,7 +80,7 @@ public class Graph : MonoBehaviour
     void Update()
     {
         GraphFunctions f = functions[(int)function];
-        
+
 
         for (int i = 0; i < points.Length; i++)
         {
@@ -106,15 +110,33 @@ public class Graph : MonoBehaviour
     static float SineFunction(float x, float z, float t)
     {
         //return Mathf.Sin((Mathf.PI * PIFactor) * ((x * xFactor) + (t * speed))) * yFactor; 
-        return Mathf.Sin(Mathf.PI * (x  + t));
+        return Mathf.Sin(PI * (x + t));
     }
 
 
     static float MultiSineFunction(float x, float z, float t)
     {
-        float y = Mathf.Sin(Mathf.PI * (x + t));
-        y += Mathf.Sin(( 2 * Mathf.PI) * (x + (2*t))) / 2;
+        float y = Mathf.Sin(PI * (x + t));
+        y += Mathf.Sin((2 * PI) * (x + (2 * t))) / 2;
         y *= 2f / 3f;
+        return y;
+    }
+
+    static float Sine2DFunction(float x, float z, float t)
+    {
+        //return Mathf.Sin(PI * (x + z + t));
+        float y = Mathf.Sin(PI * (x + t));
+        y += Mathf.Sin(PI * (z + t));
+        y *= 0.5f;
+        return y;
+    }
+
+    static float MultiSine2DFunction(float x, float z, float t)
+    {
+        float y = 4f * Mathf.Sin(PI * (x + z + t * 0.5f));
+        y += Mathf.Sin(PI * (x + t));
+        y += Mathf.Sin(2f * PI * (z + 2f * t)) * 0.5f;
+        y *= 1f / 5.5f;
         return y;
     }
 }
