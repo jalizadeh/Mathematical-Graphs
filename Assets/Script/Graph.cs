@@ -9,8 +9,11 @@ public class Graph : MonoBehaviour
 
     Transform[] points;
     public Transform pointPrefab;
-    [Range(10, 100)]
+
+    [Range(1, 20)]
     public int resolution;
+    int realRes; // resolution * 2
+
     [Range(1, 5)]
     public int hRange;
 
@@ -47,12 +50,25 @@ public class Graph : MonoBehaviour
         scale = Vector3.one * step;
         position.z = 0;
 
-        points = new Transform[resolution * 2];
-        for (int i = 0; i < points.Length; i++)
+        //array in X and Z axis
+        realRes = resolution * 2;
+        points = new Transform[realRes * realRes];
+
+        for (int i = 0, x=0, z=0; i < points.Length; i++, x++)
         {
+            if(x == realRes)
+            {
+                //at the end of each line, it is reset for the new line
+                x = 0;
+
+                //calculate for next row of line
+                z += 1;
+            }
+
             //Instantiate always return T where T is the Type of the object
             points[i] = Instantiate(pointPrefab);
-            position.x = (i + 0.5f) * step - hRange;
+            position.x = (x + 0.5f) * step - hRange;
+            position.z = (z + 0.5f) * step - hRange;
             points[i].localPosition = position;
             points[i].localScale = scale;
             points[i].name = "Point #" + i;
@@ -83,7 +99,7 @@ public class Graph : MonoBehaviour
             }
             */
 
-            position.y = f(position.x, Time.time);
+            position.y = f(position.x, position.z, Time.time);
 
             points[i].localPosition = position;
         }
@@ -92,14 +108,14 @@ public class Graph : MonoBehaviour
 
 
 
-    static float SineFunction(float x, float t)
+    static float SineFunction(float x, float z, float t)
     {
         //return Mathf.Sin((Mathf.PI * PIFactor) * ((x * xFactor) + (t * speed))) * yFactor; 
         return Mathf.Sin(Mathf.PI * (x  + t));
     }
 
 
-    static float MultiSineFunction(float x, float t)
+    static float MultiSineFunction(float x, float z, float t)
     {
         float y = Mathf.Sin(Mathf.PI * (x + t));
         y += Mathf.Sin(( 2 * Mathf.PI) * (x + (2*t))) / 2;
