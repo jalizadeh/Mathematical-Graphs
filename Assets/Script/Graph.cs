@@ -7,6 +7,9 @@ public class Graph : MonoBehaviour
     #region VARIABLES
     //public enum Functions { Sine, Multiple_Sine};
     const float PI = Mathf.PI;
+    float step;
+    Vector3 scale;
+    Vector3 position;
 
     Transform[] points;
     public Transform pointPrefab;
@@ -18,6 +21,8 @@ public class Graph : MonoBehaviour
     [Range(1, 5)]
     public int hRange;
 
+
+    [Header("Runtime Parameters")]
 
     //public Functions functions;
     public GraphFunctionName function;
@@ -36,15 +41,14 @@ public class Graph : MonoBehaviour
             Torus,
             InterestingTorus};
 
-    float step;
-    Vector3 scale;
-    Vector3 position;
-
     [Range(0, 1)]
     public float uFactor = 1f;
 
     [Range(0, 1)]
     public float vFactor = 1f;
+
+    [Range(0, 5)]
+    public int piFactor = 1;
 
     [Range(-1, 1)]
     public float animationSpeed = 1f;
@@ -91,7 +95,7 @@ public class Graph : MonoBehaviour
             {
                 float u = (x + 0.5f) * step - hRange;
                 Vector3 position = points[i].localPosition;
-                position = f(u * uFactor, v * vFactor, Time.time * animationSpeed);
+                position = f(u * uFactor, v * vFactor, PI * piFactor, Time.time * animationSpeed);
                 points[i].localPosition = position;
             }
         }
@@ -100,40 +104,40 @@ public class Graph : MonoBehaviour
 
 
 
-    static Vector3 SineFunction(float u, float v, float t)
+    static Vector3 SineFunction(float u, float v, float pi, float t)
     {
         Vector3 p;
         p.x = u;
 
-        p.y = Mathf.Sin(PI * (u + t));
+        p.y = Mathf.Sin(pi * (u + t));
 
         p.z = v;
         return p;
     }
 
 
-    static Vector3 MultiSineFunction(float u, float v, float t)
+    static Vector3 MultiSineFunction(float u, float v, float pi, float t)
     {
         Vector3 p;
         p.x = u;
 
-        float y = Mathf.Sin(PI * (u + t));
-        y += Mathf.Sin((2 * PI) * (u + (2 * t))) / 2;
+        float y = Mathf.Sin(pi * (u + t));
+        y += Mathf.Sin((2 * pi) * (u + (2 * t))) / 2;
         y *= 2f / 3f;
         p.y = y;
-        
+
         p.z = v;
         return p;
     }
 
-    static Vector3 Sine2DFunction(float u, float v, float t)
+    static Vector3 Sine2DFunction(float u, float v, float pi, float t)
     {
-        
+
         Vector3 p;
         p.x = u;
 
-        float y = Mathf.Sin(PI * (u + t));
-        y += Mathf.Sin(PI * (v + t));
+        float y = Mathf.Sin(pi * (u + t));
+        y += Mathf.Sin(pi * (v + t));
         y *= 0.5f;
         p.y = y;
 
@@ -141,14 +145,14 @@ public class Graph : MonoBehaviour
         return p;
     }
 
-    static Vector3 MultiSine2DFunction(float u, float v, float t)
+    static Vector3 MultiSine2DFunction(float u, float v, float pi, float t)
     {
         Vector3 p;
         p.x = u;
 
-        float y = 4f * Mathf.Sin(PI * (u + v + t * 0.5f));
-        y += Mathf.Sin(PI * (u + t));
-        y += Mathf.Sin(2f * PI * (v + 2f * t)) * 0.5f;
+        float y = 4f * Mathf.Sin(pi * (u + v + t * 0.5f));
+        y += Mathf.Sin(pi * (u + t));
+        y += Mathf.Sin(2f * pi * (v + 2f * t)) * 0.5f;
         y *= 1f / 5.5f;
         p.y = y;
 
@@ -156,7 +160,7 @@ public class Graph : MonoBehaviour
         return p;
     }
 
-    static Vector3 Ripple(float u, float v, float t)
+    static Vector3 Ripple(float u, float v, float pi, float t)
     {
         Vector3 p;
         p.x = u;
@@ -165,7 +169,7 @@ public class Graph : MonoBehaviour
 
         //-t = moving outward
         //+t = moving inward
-        float y = Mathf.Sin(PI * (4f * d - t));
+        float y = Mathf.Sin(pi * (4f * d - t));
         y /= 1f + 10f * d;
         p.y = y;
 
@@ -174,106 +178,106 @@ public class Graph : MonoBehaviour
     }
 
 
-    static Vector3 Cylinder(float u, float v, float t)
+    static Vector3 Cylinder(float u, float v, float pi, float t)
     {
         float radius = 1f;
 
         Vector3 p;
-        p.x = radius * Mathf.Sin(PI * u + t);
+        p.x = radius * Mathf.Sin(pi * u + t);
         p.y = v;
-        p.z = radius * Mathf.Cos(PI * u + t);
+        p.z = radius * Mathf.Cos(pi * u + t);
         return p;
     }
 
 
-    
 
-    static Vector3 WobblyCylinder(float u, float v, float t)
+
+    static Vector3 WobblyCylinder(float u, float v, float pi, float t)
     {
-        float radius = 1f + Mathf.Sin(6f * PI * u + t) * 0.2f;
+        float radius = 1f + Mathf.Sin(6f * pi * u) * 0.2f;
 
         Vector3 p;
-        p.x = radius * Mathf.Sin(PI * u);
+        p.x = radius * Mathf.Sin(pi * u + t);
         p.y = v;
-        p.z = radius * Mathf.Cos(PI * u);
+        p.z = radius * Mathf.Cos(pi * u + t);
         return p;
     }
 
-    static Vector3 TwistingCylinder(float u, float v, float t)
+    static Vector3 TwistingCylinder(float u, float v, float pi, float t)
     {
         //to make sure that the radius doesn't exceed 1, reduce its baseline to 4/5
-        float radius = 0.8f + Mathf.Sin(PI * (6f * u + 2f * v + t)) * 0.2f;
+        float radius = 0.8f + Mathf.Sin(pi * (6f * u + 2f * v)) * 0.2f;
 
         Vector3 p;
-        p.x = radius * Mathf.Sin(PI * u);
+        p.x = radius * Mathf.Sin(pi * u + t);
         p.y = v;
-        p.z = radius * Mathf.Cos(PI * u);
+        p.z = radius * Mathf.Cos(pi * u + t);
         return p;
     }
 
-    static Vector3 Ellipse(float u, float v, float t)
+    static Vector3 Ellipse(float u, float v, float pi, float t)
     {
         float radiusU = 1f;
         float radiusV = 2f;
 
         Vector3 p;
-        p.x = radiusU * Mathf.Sin(PI * u);
+        p.x = radiusU * Mathf.Sin(pi * u + t);
         p.y = v;
-        p.z = radiusV * Mathf.Cos(PI * u);
+        p.z = radiusV * Mathf.Cos(pi * u + t);
         return p;
     }
 
 
-    static Vector3 Sphere(float u, float v, float t)
+    static Vector3 Sphere(float u, float v, float pi, float t)
     {
-        float radius = Mathf.Cos(PI * 0.5f * v);
+        float radius = Mathf.Cos(pi * 0.5f * v);
 
         Vector3 p;
-        p.x = radius * Mathf.Sin(PI * u + t);
-        p.y = Mathf.Sin(PI * 0.5f * v);
-        p.z = radius * Mathf.Cos(PI * u + t);
+        p.x = radius * Mathf.Sin(pi * u + t);
+        p.y = Mathf.Sin(pi * 0.5f * v);
+        p.z = radius * Mathf.Cos(pi * u + t);
         return p;
     }
 
 
-    static Vector3 PulsingSphere(float u, float v, float t)
+    static Vector3 PulsingSphere(float u, float v, float pi, float t)
     {
-        float radius = 0.8f + Mathf.Sin(PI * (6f * u + t)) * 0.1f;
+        float radius = 0.8f + Mathf.Sin(pi * (6f * u)) * 0.1f;
 
         Vector3 p;
-        radius += Mathf.Sin(PI * (4f * v + t)) * 0.1f;
-        float s = radius * Mathf.Cos(PI * 0.5f * v);
-        p.x = s * Mathf.Sin(PI * u);
-        p.y = radius * Mathf.Sin(PI * 0.5f * v);
-        p.z = s * Mathf.Cos(PI * u);
+        radius += Mathf.Sin(pi * (4f * v + t)) * 0.1f;
+        float s = radius * Mathf.Cos(pi * 0.5f * v);
+        p.x = s * Mathf.Sin(pi * u + t);
+        p.y = radius * Mathf.Sin(pi * 0.5f * v);
+        p.z = s * Mathf.Cos(pi * u + t);
         return p;
     }
 
 
-    static Vector3 Torus(float u, float v, float t)
+    static Vector3 Torus(float u, float v, float pi, float t)
     {
         float radius1 = 1f;
         float radius2 = 0.5f;
-        float s = radius2 * Mathf.Cos(PI * v) + radius1;
+        float s = radius2 * Mathf.Cos(pi * v) + radius1;
 
         Vector3 p;
-        p.x = s * Mathf.Sin(PI * u);
-        p.y = radius2 * Mathf.Sin(PI * v);
-        p.z = s * Mathf.Cos(PI * u);
+        p.x = s * Mathf.Sin(pi * u + t);
+        p.y = radius2 * Mathf.Sin(pi * v);
+        p.z = s * Mathf.Cos(pi * u + t);
         return p;
     }
 
 
-    static Vector3 InterestingTorus(float u, float v, float t)
+    static Vector3 InterestingTorus(float u, float v, float pi, float t)
     {
-        float radius1 = 0.65f + Mathf.Sin(PI * (6f * u + t)) * 0.1f;
-        float radius2 = 0.2f + Mathf.Sin(PI * (4f * v + t)) * 0.05f;
-        float s = radius2 * Mathf.Cos(PI * v) + radius1;
+        float radius1 = 0.65f + Mathf.Sin(pi * (6f * u)) * 0.1f;
+        float radius2 = 0.2f + Mathf.Sin(pi * (4f * v)) * 0.05f;
+        float s = radius2 * Mathf.Cos(pi * v) + radius1;
 
         Vector3 p;
-        p.x = s * Mathf.Sin(PI * u);
-        p.y = radius2 * Mathf.Sin(PI * v);
-        p.z = s * Mathf.Cos(PI * u);
+        p.x = s * Mathf.Sin(pi * u + t);
+        p.y = radius2 * Mathf.Sin(pi * v);
+        p.z = s * Mathf.Cos(pi * u + t);
         return p;
     }
 }
