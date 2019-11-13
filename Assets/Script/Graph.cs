@@ -30,7 +30,9 @@ public class Graph : MonoBehaviour
             Cylinder,
             WobblyCylinder,
             TwistingCylinder,
-            Ellipse};
+            Ellipse,
+            Sphere,
+            PulsingSphere};
 
     float step;
     Vector3 scale;
@@ -212,6 +214,32 @@ public class Graph : MonoBehaviour
         p.x = radiusU * Mathf.Sin(PI * u);
         p.y = v;
         p.z = radiusV * Mathf.Cos(PI * u);
+        return p;
+    }
+
+
+    static Vector3 Sphere(float u, float v, float t)
+    {
+        float radius = Mathf.Cos(PI * 0.5f * v);
+
+        Vector3 p;
+        p.x = radius * Mathf.Sin(PI * u + t);
+        p.y = Mathf.Sin(PI * 0.5f * v);
+        p.z = radius * Mathf.Cos(PI * u + t);
+        return p;
+    }
+
+
+    static Vector3 PulsingSphere(float u, float v, float t)
+    {
+        float radius = 0.8f + Mathf.Sin(PI * (6f * u + t)) * 0.1f;
+
+        Vector3 p;
+        radius += Mathf.Sin(PI * (4f * v + t)) * 0.1f;
+        float s = radius * Mathf.Cos(PI * 0.5f * v);
+        p.x = s * Mathf.Sin(PI * u);
+        p.y = radius * Mathf.Sin(PI * 0.5f * v);
+        p.z = s * Mathf.Cos(PI * u);
         return p;
     }
 }

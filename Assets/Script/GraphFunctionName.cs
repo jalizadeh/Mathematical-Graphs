@@ -8,5 +8,7 @@
     Cylinder,
     WobblyCylinder,
     TwistingCylinder,
-    Ellipse
+    Ellipse,
+    Sphere,
+    PulsingSphere
 }
