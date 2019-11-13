@@ -21,12 +21,16 @@ public class Graph : MonoBehaviour
 
     //public Functions functions;
     public GraphFunctionName function;
-    static GraphFunctions[] functions = 
+    static GraphFunctions[] functions =
             { SineFunction,
             Sine2DFunction,
             MultiSineFunction,
             MultiSine2DFunction,
-            Ripple };
+            Ripple,
+            Cylinder,
+            WobblyCylinder,
+            TwistingCylinder,
+            Ellipse};
 
     float step;
     Vector3 scale;
@@ -158,6 +162,56 @@ public class Graph : MonoBehaviour
         p.y = y;
 
         p.z = v;
+        return p;
+    }
+
+
+    static Vector3 Cylinder(float u, float v, float t)
+    {
+        float radius = 1f;
+
+        Vector3 p;
+        p.x = radius * Mathf.Sin(PI * u + t);
+        p.y = v;
+        p.z = radius * Mathf.Cos(PI * u + t);
+        return p;
+    }
+
+
+    
+
+    static Vector3 WobblyCylinder(float u, float v, float t)
+    {
+        float radius = 1f + Mathf.Sin(6f * PI * u + t) * 0.2f;
+
+        Vector3 p;
+        p.x = radius * Mathf.Sin(PI * u);
+        p.y = v;
+        p.z = radius * Mathf.Cos(PI * u);
+        return p;
+    }
+
+    static Vector3 TwistingCylinder(float u, float v, float t)
+    {
+        //to make sure that the radius doesn't exceed 1, reduce its baseline to 4/5
+        float radius = 0.8f + Mathf.Sin(PI * (6f * u + 2f * v + t)) * 0.2f;
+
+        Vector3 p;
+        p.x = radius * Mathf.Sin(PI * u);
+        p.y = v;
+        p.z = radius * Mathf.Cos(PI * u);
+        return p;
+    }
+
+    static Vector3 Ellipse(float u, float v, float t)
+    {
+        float radiusU = 1f;
+        float radiusV = 2f;
+
+        Vector3 p;
+        p.x = radiusU * Mathf.Sin(PI * u);
+        p.y = v;
+        p.z = radiusV * Mathf.Cos(PI * u);
         return p;
     }
 }

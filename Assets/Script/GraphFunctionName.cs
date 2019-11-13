@@ -4,5 +4,9 @@
     Sine2D,
     MultiSine,
     MultiSine2D,
-    Ripple
+    Ripple,
+    Cylinder,
+    WobblyCylinder,
+    TwistingCylinder,
+    Ellipse
 }
