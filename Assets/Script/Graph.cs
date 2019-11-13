@@ -25,7 +25,8 @@ public class Graph : MonoBehaviour
             { SineFunction,
             Sine2DFunction,
             MultiSineFunction,
-            MultiSine2DFunction };
+            MultiSine2DFunction,
+            Ripple };
 
     float step;
     Vector3 scale;
@@ -137,6 +138,17 @@ public class Graph : MonoBehaviour
         y += Mathf.Sin(PI * (x + t));
         y += Mathf.Sin(2f * PI * (z + 2f * t)) * 0.5f;
         y *= 1f / 5.5f;
+        return y;
+    }
+
+    static float Ripple(float x, float z, float t)
+    {
+        float d = Mathf.Sqrt(x * x + z * z);
+
+        //-t = moving outward
+        //+t = moving inward
+        float y = Mathf.Sin(PI * (4f * d - t));
+        y /= 1f + 10f * d;
         return y;
     }
 }
