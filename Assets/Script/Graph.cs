@@ -54,25 +54,20 @@ public class Graph : MonoBehaviour
         realRes = resolution * 2;
         points = new Transform[realRes * realRes];
 
-        for (int i = 0, x=0, z=0; i < points.Length; i++, x++)
+        for (int i = 0, z=0; z < realRes; z++)
         {
-            if(x == realRes)
-            {
-                //at the end of each line, it is reset for the new line
-                x = 0;
-
-                //calculate for next row of line
-                z += 1;
-            }
-
-            //Instantiate always return T where T is the Type of the object
-            points[i] = Instantiate(pointPrefab);
-            position.x = (x + 0.5f) * step - hRange;
             position.z = (z + 0.5f) * step - hRange;
-            points[i].localPosition = position;
-            points[i].localScale = scale;
-            points[i].name = "Point #" + i;
-            points[i].SetParent(transform, false);
+
+            for (int x = 0; x < realRes; x++, i++)
+            {
+                //Instantiate always return T where T is the Type of the object
+                points[i] = Instantiate(pointPrefab);
+                position.x = (x + 0.5f) * step - hRange;
+                points[i].localPosition = position;
+                points[i].localScale = scale;
+                points[i].name = "Point #" + i;
+                points[i].SetParent(transform, false);
+            }
         }
 
     }
