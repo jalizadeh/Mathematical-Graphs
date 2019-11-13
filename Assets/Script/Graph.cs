@@ -270,14 +270,14 @@ public class Graph : MonoBehaviour
 
     static Vector3 InterestingTorus(float u, float v, float pi, float t)
     {
-        float radius1 = 0.65f + Mathf.Sin(pi * (6f * u)) * 0.1f;
-        float radius2 = 0.2f + Mathf.Sin(pi * (4f * v)) * 0.05f;
+        float radius1 = 0.65f + Mathf.Sin(pi * (6f * u + t)) * 0.1f;
+        float radius2 = 0.2f + Mathf.Sin(pi * (4f * v + t)) * 0.05f;
         float s = radius2 * Mathf.Cos(pi * v) + radius1;
 
         Vector3 p;
-        p.x = s * Mathf.Sin(pi * u + t);
+        p.x = s * Mathf.Sin(pi * u );
         p.y = radius2 * Mathf.Sin(pi * v);
-        p.z = s * Mathf.Cos(pi * u + t);
+        p.z = s * Mathf.Cos(pi * u);
         return p;
     }
 }
